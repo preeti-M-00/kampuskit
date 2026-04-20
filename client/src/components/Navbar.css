@@ -1,0 +1,242 @@
+/* 2. NAVBAR CONTAINER */
+.navbar {
+  width: 94%;
+  max-width: 1440px;
+  margin: 20px auto;
+  padding: 12px 30px;
+  border-radius: 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Keeps Left, Center, and Right balanced */
+
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+
+  overflow: visible;
+}
+
+.navbar *{
+  box-sizing: border-box;
+}
+
+.avatar-wrapper{
+  position: relative;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.avatar{
+  cursor: pointer;
+}
+
+.avatar-dropdown {
+  position: absolute;
+  top: 48px;
+  right: 0;
+  width: 160px;
+  list-style: none;
+  padding: 8px;
+  margin: 0;
+  border-radius: 12px;
+  background: rgba(20, 20, 40, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-6px);
+  transition: 0.2s ease;
+  z-index: 999;
+}
+
+.avatar-dropdown.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0px);
+}
+
+/* .avatar-wrapper:hover .avatar-dropdown{
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0px);
+} */
+
+.avatar-dropdown li{
+  padding: 10px 12px;
+  border-radius: 10px;
+
+  font-size: 14px;
+  color: white;
+  cursor: pointer;
+
+  transition: 0.2s;
+
+  cursor: pointer;
+}
+
+.avatar-dropdown li:hover{
+  background: rgba(106,60,255,0.25);
+}
+
+/* 3. LEFT SECTION - Fixed the width conflict here */
+.nav-left {
+  /* Increased this to 280px to safely house a 250px logo */
+  flex: 0 0 280px; 
+  display: flex;
+  align-items: center;
+}
+
+.nav-logo {
+  width: 250px; /* Added 'px' - very important! */
+  max-width: 100%;
+  height: auto;
+  display: block;
+  object-fit: contain;
+}
+
+/* 4. CENTER SECTION - Compact Search */
+.nav-center {
+  flex: 1; /* Takes up the remaining middle space */
+  display: flex;
+  justify-content: center;
+}
+
+.searchBox {
+  width: 280px; /* More compacted width */
+  max-width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 16px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  transition: all 0.3s ease;
+}
+
+.searchBox:focus-within {
+  width: 320px; /* Slight expansion on focus */
+  border-color: rgba(106, 60, 255, 0.5);
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.searchIcon {
+  color: #bdb7ff;
+  font-size: 16px;
+}
+
+.searchBox input {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #ffffff;
+  font-size: 14px;
+}
+
+/* 5. RIGHT SECTION */
+.nav-right {
+  /* Match the left side (280px) to keep the search bar perfectly centered */
+  flex: 0 0 auto; 
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 15px;
+
+  min-width: 0; /*--prevent overflow*/
+}
+
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  min-width: 0; /*allows username ellipses*/
+}
+
+.username{
+  color: #ffffff;
+  font-weight: 600;
+
+  /*--prevents username pushing layout*/
+  /* max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap; */
+}
+
+.avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6a3cff, #4d2bff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  flex-shrink: 0; /*doesnt shrink*/
+}
+
+/* 6. LOGOUT BUTTON */
+.logoutBtn {
+  padding: 8px 16px;
+  border-radius: 10px;
+  background: rgba(106, 60, 255, 0.2);
+  border: 1px solid rgba(106, 60, 255, 0.3);
+  color: white;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: 0.2s;
+
+  flex-shrink: 0; /*prevent button shrink*/
+}
+
+.logoutBtn:hover {
+  background: rgba(106, 60, 255, 0.35);
+}
+
+/* 7. RESPONSIVENESS */
+
+/* Tablet: Shrink logo and search to fit */
+@media (max-width: 1100px) {
+  .nav-left, .nav-right {
+    flex: 0 0 220px; /* Allow them to shrink naturally */
+  }
+  .nav-logo {
+    width: 180px; 
+  }
+  .searchBox {
+    width: 200px;
+  }
+
+  .searchBox:focus-within{
+    width: 240px;
+  }
+}
+
+/* Mobile: Stack or Hide items */
+@media (max-width: 768px) {
+  .navbar {
+    width: 96%;
+    padding: 10px 15px;
+  }
+
+  .nav-logo {
+    width: 140px;
+  }
+
+  .nav-center {
+    display: none; /* Search is usually hidden in a menu on mobile */
+  }
+
+  .username {
+    display: none;
+  }
+}

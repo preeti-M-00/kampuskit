@@ -1,0 +1,30 @@
+/*---buttons----*/
+.button-container{
+  position: absolute;
+  top: 55%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  display: flex;
+  gap: 30px;
+  z-index: 10;
+}
+
+.glass-btn{
+  min-width: 220px;
+  text-align: center;
+  padding: 12px 20px;
+  border-radius: 14px;
+  backdrop-filter: blur(12px);
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.25);
+  color: #FFE5FF;
+  font-size: 1rem;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+  transition: 0.3s;
+  cursor: pointer;
+}
+
+.glass-btn:hover{
+  background: rgba(255,255,255,0.2);
+  transform: translateY(-3px);
+}

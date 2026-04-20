@@ -1,0 +1,55 @@
+# -----------------------------
+# LangChain Core
+# -----------------------------
+langchain
+langchain-core
+
+# -----------------------------
+# OpenAI Integration
+# -----------------------------
+langchain-openai
+openai
+tiktoken
+
+# -----------------------------
+# Anthropic Integration
+# -----------------------------
+langchain-anthropic
+
+# -----------------------------
+# Google Gemini Integration
+# -----------------------------
+langchain-google-genai
+google-generativeai
+
+# -----------------------------
+# Hugging Face Integration
+# -----------------------------
+langchain-huggingface
+transformers
+huggingface-hub
+sentence-transformers
+accelerate
+
+# -----------------------------
+# Deep Learning Backend (PyTorch)
+# -----------------------------
+torch
+torchvision
+torchaudio
+
+# -----------------------------
+# Vector Database (Optional for RAG)
+# -----------------------------
+chromadb
+
+# -----------------------------
+# Environment Variable Management
+# -----------------------------
+python-dotenv
+
+# -----------------------------
+# Machine Learning Utilities
+# -----------------------------
+numpy
+scikit-learn

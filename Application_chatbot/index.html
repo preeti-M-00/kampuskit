@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Application Chatbot</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+html, body {
+    margin: 0;
+    padding: 0;
+    font-family: "Segoe UI", sans-serif;
+    background: linear-gradient(to bottom, #2a1b5e, #140a30);
+    height: 100%;
+}
+
+/* Floating Button */
+.chat-toggle {
+    position: fixed;
+    bottom: 35px;
+    right: 40px;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+    color: white;
+    font-size: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow:
+        0 6px 16px rgba(124,58,237,0.4),
+        0 0 0 5px rgba(124,58,237,0.08);
+    transition: 0.25s;
+    z-index: 9999;
+}
+
+.chat-toggle:hover { transform: scale(1.08); }
+
+.session-menu {
+    position: fixed;
+    bottom: 95px;
+    right: 40px;
+    width: 200px;
+    background: rgba(28,16,60,0.98);
+    border-radius: 14px;
+    display: none;
+    flex-direction: column;
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.45);
+    overflow: hidden;
+    z-index: 9999;
+}
+
+.session-menu button {
+    padding: 14px;
+    background: transparent;
+    color: white;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.session-menu button:hover {
+    background: rgba(124,58,237,0.25);
+}
+
+.chat-widget {
+    position: fixed;
+    bottom: 95px;
+    right: 40px;
+    width: 340px;
+    height: 460px;
+    background: rgba(28,16,60,0.96);
+    border-radius: 18px;
+    display: none;
+    flex-direction: column;
+    backdrop-filter: blur(25px);
+    border: 1px solid rgba(255,255,255,0.05);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.45);
+    overflow: hidden;
+    z-index: 9999;
+}
+
+.chat-header {
+    padding: 12px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.chat-box {
+    flex: 1;
+    padding: 14px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.message-wrapper { display: flex; margin-bottom: 10px; }
+.user-wrapper { justify-content: flex-end; }
+.assistant-wrapper { justify-content: flex-start; }
+
+.message {
+    padding: 8px 12px;
+    border-radius: 14px;
+    max-width: 75%;
+    font-size: 12.5px;
+}
+
+.user {
+    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+    color: white;
+}
+
+.assistant {
+    background: rgba(255,255,255,0.12);
+    color: #e5e7ff;
+}
+
+.avatar {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 5px;
+}
+
+.user-avatar { background: linear-gradient(135deg, #fda4af, #fb7185); }
+.assistant-avatar { background: linear-gradient(135deg, #fbbf24, #f59e0b); }
+
+.input-area {
+    display: flex;
+    padding: 10px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+input {
+    flex: 1;
+    padding: 7px 10px;
+    border-radius: 18px;
+    border: none;
+    background: rgba(255,255,255,0.08);
+    color: white;
+}
+
+.send-btn {
+    margin-left: 6px;
+    padding: 6px 10px;
+    border-radius: 50%;
+    border: none;
+    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+    color: white;
+    cursor: pointer;
+}
+
+.typing-dot {
+    width: 6px;
+    height: 6px;
+    background: #c4b5fd;
+    border-radius: 50%;
+    animation: blink 1.4s infinite both;
+}
+
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes blink {
+    0% { opacity: 0.2; }
+    20% { opacity: 1; }
+    100% { opacity: 0.2; }
+}
+</style>
+</head>
+<body>
+
+<div class="chat-toggle" onclick="toggleChat()">💬</div>
+
+<div id="sessionMenu" class="session-menu">
+    <button onclick="loadExistingChat()">Existing Chat</button>
+    <button onclick="startNewChat()">New Chat</button>
+</div>
+
+<div class="chat-widget" id="chatWidget">
+    <div class="chat-header">
+        🤖 Application Chatbot
+        <span onclick="closeChat()" style="cursor:pointer;">✕</span>
+    </div>
+
+    <div id="chatBox" class="chat-box"></div>
+
+    <div class="input-area">
+        <input type="text" id="question" placeholder="Type your message...">
+        <button class="send-btn" onclick="sendMessage()">➤</button>
+    </div>
+</div>
+
+<script>
+const chatBox = document.getElementById("chatBox");
+const inputField = document.getElementById("question");
+const widget = document.getElementById("chatWidget");
+const sessionMenu = document.getElementById("sessionMenu");
+
+let currentSessionId = null;
+let sessions = {};
+
+
+// ---------------- SERVER RESTART CHECK ----------------
+async function checkServerRestart() {
+    try {
+        const response = await fetch("http://127.0.0.1:8000/health");
+        const data = await response.json();
+
+        const storedStartTime = localStorage.getItem("server_start_time");
+
+        if (!storedStartTime) {
+            localStorage.setItem("server_start_time", data.server_start_time);
+        } 
+        else if (storedStartTime !== data.server_start_time) {
+            localStorage.clear();
+            sessions = {};
+        }
+    } catch (err) {
+        console.log("Server not reachable");
+    }
+}
+
+checkServerRestart();
+
+
+// ---------------- UI CONTROLS ----------------
+function toggleChat() {
+    sessionMenu.style.display = "flex";
+}
+
+function closeChat() {
+    widget.style.display = "none";
+}
+
+function loadExistingChat() {
+
+    sessionMenu.style.display = "none";
+    chatBox.innerHTML = "";
+    widget.style.display = "flex";
+
+    const keys = Object.keys(sessions);
+
+    if (keys.length === 0) {
+        addMessage("👋 No previous chat exists. Click 'New Chat' to start.", "assistant");
+        return;
+    }
+
+    currentSessionId = keys[keys.length - 1];
+
+    // ✅ RE-RENDER OLD MESSAGES
+    sessions[currentSessionId].forEach(msg => {
+        addMessage(msg.text, msg.role);
+    });
+}
+
+function startNewChat() {
+    sessionMenu.style.display = "none";
+    currentSessionId = null;
+    chatBox.innerHTML = "";
+    widget.style.display = "flex";
+}
+
+
+// ---------------- MESSAGE FUNCTION ----------------
+function addMessage(text, role, isTyping = false) {
+
+    const wrapper = document.createElement("div");
+    wrapper.classList.add("message-wrapper", role + "-wrapper");
+
+    const avatar = document.createElement("div");
+    avatar.classList.add("avatar", role + "-avatar");
+    avatar.innerText = role === "user" ? "👤" : "🤖";
+
+    const msg = document.createElement("div");
+    msg.classList.add("message", role);
+
+    if (isTyping) {
+        msg.innerHTML = `
+            <div style="display:flex; gap:4px;">
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+            </div>
+        `;
+    } else {
+        msg.innerText = text;
+    }
+
+    if (role === "user") {
+        wrapper.appendChild(msg);
+        wrapper.appendChild(avatar);
+    } else {
+        wrapper.appendChild(avatar);
+        wrapper.appendChild(msg);
+    }
+
+    chatBox.appendChild(wrapper);
+    chatBox.scrollTop = chatBox.scrollHeight;
+
+    return wrapper;
+}
+
+
+// ---------------- SEND MESSAGE ----------------
+async function sendMessage() {
+
+    const question = inputField.value.trim();
+    if (!question) return;
+
+    addMessage(question, "user");
+    inputField.value = "";
+
+    const typingBubble = addMessage("", "assistant", true);
+
+    try {
+        const response = await fetch("http://127.0.0.1:8000/chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                question: question,
+                session_id: currentSessionId
+            })
+        });
+
+        const data = await response.json();
+
+        if (!currentSessionId) {
+            currentSessionId = data.session_id;
+            sessions[currentSessionId] = [];
+        }
+
+        typingBubble.remove();
+
+        addMessage(data.response, "assistant");
+
+        // ✅ STORE CHAT IN MEMORY
+        sessions[currentSessionId].push({ role: "user", text: question });
+        sessions[currentSessionId].push({ role: "assistant", text: data.response });
+
+    } catch (error) {
+        typingBubble.remove();
+        addMessage("⚠ Backend connection failed.", "assistant");
+    }
+}
+
+inputField.addEventListener("keypress", function(e) {
+    if (e.key === "Enter") sendMessage();
+});
+</script>
+</body>
+</html>

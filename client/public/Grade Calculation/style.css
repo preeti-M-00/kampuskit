@@ -1,0 +1,127 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/*  Background  */
+body {
+  min-height: 100vh;
+  background: linear-gradient(to bottom, #2a1b5e, #140a30);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 20px;
+  color: #ffffff;
+}
+
+/*  Main Heading  */
+h2 {
+  font-size: 32px;
+  margin-bottom: 30px;
+  letter-spacing: 1px;
+  text-align: center;
+}
+
+/*  Glass Card Box  */
+.box {
+  width: 100%;
+  max-width: 600px;
+  margin-bottom: 30px;
+  padding: 25px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+  transition: transform 0.3s ease;
+}
+
+.box:hover {
+  transform: translateY(-5px);
+}
+
+/*  Section Titles  */
+.box h3 {
+  margin-bottom: 15px;
+  font-weight: 600;
+  color: #e0d9ff;
+}
+
+/*  Inputs  */
+input {
+  padding: 10px;
+  width: 130px;
+  margin: 8px 8px 8px 0;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  transition: 0.3s;
+}
+
+input::placeholder {
+  color: #ddd;
+}
+
+input:focus {
+  background: rgba(255, 255, 255, 0.25);
+  transform: scale(1.05);
+}
+
+/*  Buttons */
+button {
+  padding: 8px 14px;
+  margin: 10px 8px 0 0;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #8f5cff, #5b2be0);
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(143, 92, 255, 0.6);
+}
+
+/*  Results  */
+#sgpaResult,
+#cgpaResult {
+  font-size: 18px;
+  font-weight: 600;
+  margin-top: 15px;
+  color: #7dffb2;
+}
+
+/*  Responsive  */
+@media (max-width: 500px) {
+  input {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  button {
+    width: 100%;
+    margin-top: 10px;
+  }
+}
+
+/* Add Button  */
+.add-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Add a bright circular + icon */
+.add-btn::before {
+  content: "+";
+  font-size: 18px;
+  font-weight: bold;
+  color: #ffffff;
+  text-shadow: 0 0 8px #ffffff, 0 0 15px #8f5cff;
+}

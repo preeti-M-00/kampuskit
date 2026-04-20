@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>SGPA & CGPA Calculator</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<h2>SGPA & CGPA Calculator</h2>
+
+<!-- ---------------- SGPA SECTION ---------------- -->
+<div class="box">
+  <h3> SGPA Calculator (Current Semester)</h3>
+
+  <div id="subjects">
+    <input type="number" placeholder="Grade Point">
+    <input type="number" placeholder="Credits"><br>
+  </div>
+
+  <button class="add-btn" onclick="addSubject()">Add Subject</button>
+  <button onclick="calculateSGPA()">Calculate SGPA</button>
+
+  <p id="sgpaResult"></p>
+</div>
+
+<!-- ---------------- CGPA SECTION ---------------- -->
+<div class="box">
+  <h3> CGPA Calculator (All Semesters)</h3>
+
+  <div id="semesters">
+    <input type="number" step="0.01" placeholder="Semester SGPA">
+  </div>
+
+  <button class="add-btn" onclick="addSemester()">Add Semester</button>
+  <button onclick="calculateCGPA()">Calculate CGPA</button>
+
+  <p id="cgpaResult"></p>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
